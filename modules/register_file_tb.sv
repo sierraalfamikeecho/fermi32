@@ -17,7 +17,7 @@ RegisterFile dut (.WE3(WE3), .clk(clk), .A1(A1), .A2(A2), .A3(A3), .WD3(WD3), .R
 intial begin
 $dumpfule("dump.vcd");
 $dumpvars;
-clk = 1`b0;
+clk = 1'b0;
 WE3 = 1'b0;
 A1 = 1'b0;
 A2 = 1'b0;
