@@ -1,9 +1,9 @@
 //A basic program_counter holds address of next instruction
 module program_counter(
-input clk,
-input reset,
-input [31:0] pc_in,
-output reg [31:0] pc_out
+  input clk,
+  input reset,
+  input [31:0] pc_in,
+  output reg [31:0] pc_out
 );
 
   always@(posedge clk)
