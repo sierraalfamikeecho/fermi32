@@ -24,7 +24,7 @@ end
 always @(posedge clk) begin
     if (nrst == 1'b0) begin
         for (int i  = 0; i < WORDS; i++) begin
-            mem[i] <= 32'd0;
+            mem[i] <= 32'b0;
         end
         for (int i = 0; i < WORDS; i++) begin
             mem[i] <= 32'b0;
