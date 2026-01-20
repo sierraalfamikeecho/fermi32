@@ -37,7 +37,7 @@ async def and_test(dut):
     await Timer(1, units="ns")
     for _ in range(1000):
         a = random.randint(0,0xFFFFFFFF)
-        b = random.randing(0,0xFFFFFFFF)
+        b = random.randint(0,0xFFFFFFFF)
         expected = (a & b) & 0xFFFFFFFFF
         dut.src1.value = a
         dut.src2.value = b
