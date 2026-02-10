@@ -1,10 +1,13 @@
 # Makefile
 
 # defaults
-SIM ?= questa
+SIM ?= verilator
+
 TOPLEVEL_LANG ?= verilog
 
-VERILOG_INCLUDE_DIRS += ../../src/
+VERILOG_SOURCES += $(PWD)../../src/loadStoreDecoder.sv
+
+EXTRA_ARGS += --trace --trace-structs
 
 COCOTB_TOPLEVEL = loadStoreDecoder.sv
 

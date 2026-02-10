@@ -1,3 +1,4 @@
+`timescale 1ns/1ps
 //A basic program_counter holds address of next instruction
 module program_counter(
   input clk,

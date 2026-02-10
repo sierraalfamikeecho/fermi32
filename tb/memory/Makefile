@@ -1,7 +1,8 @@
 # Memory module test bench
+SIM ?= verilator
 TOPLEVEL_LANG ?= verilog
 
-VERILOG_SOURCE += ../src/memory.sv
+VERILOG_SOURCE += $(PWD)../../src/memory.sv
 
 COCOTB_TOPLEVEL += memory_tb.py
 
