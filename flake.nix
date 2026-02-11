@@ -17,6 +17,9 @@
             verilator
             tcl
             gnumake
+            gtkwave
+            yosys
+            verible
             python313Packages.cocotb
           ];
         };
