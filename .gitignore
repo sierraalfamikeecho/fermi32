@@ -99,3 +99,4 @@ _info
 **.qtl
 
 tb/*/sim_build
+.direnv/
