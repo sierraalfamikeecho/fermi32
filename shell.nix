@@ -1,10 +1,18 @@
-{pkgs ? import <nixpkgs> {}}:
+{
+  pkgs ? import <nixpkgs> { },
+}:
 pkgs.mkShell {
   packages = with pkgs; [
-    python313Packages.cocotb
-    python313Packages.pytest
     verilator
     tcl
     gnumake
+    verible
+    litex
+    (pkgs.python3.withPackages (
+      python-pkgs: with python-pkgs; [
+        cocotb
+        pytest
+      ]
+    ))
   ];
 }

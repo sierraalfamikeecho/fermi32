@@ -11,7 +11,7 @@ module program_counter (
 
     input logic write_enable,
     input logic [31:0] write_data,
-    input logic [4:0] address2
+    input logic [4:0] address3
 );
 
 reg [31:0] registers [0:31];
