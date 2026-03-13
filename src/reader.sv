@@ -31,7 +31,7 @@ module reader (
       3'b010: raw_data = masked_data;
 
       3'b000, 3'b100: begin
-        case (be_mask)
+        case (byte_enable_mask)
           4'b0001: raw_data = masked_data;
           4'b0010: raw_data = masked_data >> 8;
           4'b0100: raw_data = masked_data >> 16;
@@ -40,7 +40,7 @@ module reader (
       end
 
       3'b001, 3'b101: begin
-        case (be_mask)
+        case (byte_enable_mask)
           4'b0011: raw_data = masked_data;
           4'b1100: raw_data = masked_data >> 16;
         endcase
@@ -60,6 +60,6 @@ module reader (
       write_back_data = sign_extend ? {{16{raw_data[15]}}, raw_data[15:0]} : raw_data;
     endcase
 
-    valid = |be_mask;
+    valid = |byte_enable;
   end
 endmodule
