@@ -2,7 +2,7 @@
 
 module memory #(
     parameter WORDS = 128,
-    parameter mem_init = ""
+    parameter memory_init = ""
 )
 (
     input logic clk,
@@ -18,8 +18,8 @@ module memory #(
 reg [31:0] mem [0:WORDS-1];
 
 initial begin
-    if (mem_init != "") begin
-        $readmemh(mem_init, mem);
+    if (memory_init != "") begin
+        $readmemh(memory_init, mem);
     end
 end
 

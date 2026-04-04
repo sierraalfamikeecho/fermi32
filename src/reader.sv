@@ -60,6 +60,6 @@ module reader (
       write_back_data = sign_extend ? {{16{raw_data[15]}}, raw_data[15:0]} : raw_data;
     endcase
 
-    valid = |byte_enable;
+    valid = |byte_enable_mask;
   end
 endmodule

@@ -10,9 +10,7 @@ module alu (
     output logic [WIDTH-1:0] result,
 
     output logic zero,
-    output logic negative,
-    output logic carry_out,
-    output logic overflow
+    output logic last_bit
 );
 
   parameter WIDTH = 32;
@@ -36,5 +34,6 @@ module alu (
   //assign carry_out = ([WIDTH] != 0);
 
   assign result = result;
+  assign last_bit = result[0];
 
 endmodule

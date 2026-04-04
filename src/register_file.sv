@@ -1,25 +1,32 @@
 `timescale 1ns/1ps
 
 module register_file(
-  input WE3, clk,
-  input [4:0] A1,
-  input [4:0] A2,
-  input [4:0] A3,
-  input [31:0] WD3,
+  input write_enable, clk, rst_n,
+  input [4:0] address1,
+  input [4:0] address2,
+  input [4:0] address3,
+  input [31:0] write_data,
 
-  output reg [31:0] RD1,
-  output reg [31:0] RD2
+  output reg [31:0] read_data1,
+  output reg [31:0] read_data2
 );
 
-  reg [31:0] register_file[31:0];
+  reg [31:0] registers[31:0];
 
-  always@(posedge clk)
-  if (WE3)
-    register_file[A3] <= WD3;
+  always@(posedge clk) begin
+      if(rst_n == 1'b0) begin
+          for(int i = 0; i<32; i++) begin
+              registers[i] <= 32'b0;
+          end
+      end
 
+      else if(write_enable == 1'b1 && address3 != 0) begin
+          registers[address3] <= write_data;
+      end
+  end
   always@(*) begin
-    RD1 = (A1==1)? register_file[A1]:0;
-    RD2 = (A2==1)? register_file[A2]:0;
+    read_data1 = (address1==1)? registers[address1]:0;
+    read_data2 = (address2==1)? registers[address2]:0;
   end
 
 endmodule

@@ -8,12 +8,23 @@ module cpu (
   reg   [31:0] program_counter;
   logic [31:0] program_counter_next;
   logic [31:0] program_counter_second_add;
+  logic [31:0] program_counter_plus_four;
+  assign program_counter_plus_four = program_counter + 4;
 
   always_comb begin : program_counter_select
     case (program_counter_source)
-      1'b0: program_counter_next = program_counter + 4;
+      1'b0: program_counter_next = program_counter_plus_four;
       1'b1: program_counter_next = program_counter_second_add;
     endcase
+  end
+
+  always_comb begin : second_add_select
+      case (second_add_source)
+        2'b00 : program_counter_second_add = program_counter + immediate;
+        2'b01 : program_counter_second_add = immediate;
+        2'b10 : program_counter_second_add = read_register1 + immediate;
+        default : program_counter_second_add = 32'b0;
+      endcase
   end
 
   always @(posedge clk) begin
@@ -33,7 +44,7 @@ module cpu (
       .address(program_counter),
       .write_data(32'b0),
       .write_enable(1'b0),
-      .reset(1'b1),
+      .nrst(1'b1),
       .byte_enable(4'b0000),
 
       .read_data(instruction)
@@ -50,8 +61,8 @@ module cpu (
 
   wire [3:0] alu_control;
   wire [2:0] imm_source;
-  wire mem_write;
-  wire reg_write;
+  wire memory_write;
+  wire register_write;
 
   wire alu_source;
   wire [1:0] write_back_source;
@@ -67,57 +78,15 @@ module cpu (
 
       .alu_control(alu_control),
       .imm_source (imm_source),
-      .mem_write  (mem_write),
-      .reg_write  (reg_write),
-
-      .alu_control(alu_control),
-      .imm_source (imm_source),
-      .mem_write  (mem_write),
-      .reg_write  (reg_write),
+      .memory_write  (memory_write),
+      .register_write  (register_write),
 
       .alu_source(alu_source),
       .write_back_source(write_back_source),
       .program_counter_source(program_counter_source),
       .second_add_source(second_add_source)
   );
-
-  //Register File
-  logic [4:0] source_register1;
-  logic [4:0] source_register2;
-  logic [4:0] destination_register;
-  assign source_register1 = instruction[19:15];
-  assign source_register2 = instruction[24:20];
-  assign destination_register = instruction[11:7];
-
-  wire [31:0] read_register1;
-  wire [31:0] read_register2;
-
-  logic write_back_valid;
-
-  logic [31:0] write_back_data;
-
-  always_comb begin : write_back_source_select
-    case (write_back_source)
-      2'b00: begin
-        write_back_data  = alu_result;
-        write_back_valid = 1'b1;
-      end
-      2'b01: begin
-        write_back_data  = mem_read_write_back_data;
-        write_back_valid = mem_read_write_back_valid;
-      end
-      2'b10: begin
-        write_back_data  = program_counter_plus_four;
-        write_back_valid = 1'b1;
-      end
-      2'b11: begin
-        write_back_data  = program_counter_plus_four;
-        write_back_valid = 1'b1;
-      end
-    endcase
-  end
-
-  regfile regfile (
+  register_file registerfile (
       .clk  (clk),
       .rst_n(rst_n),
 
@@ -134,6 +103,43 @@ module cpu (
       .write_data(write_back_data),
       .address3(destination_register)
   );
+
+
+    //Register File
+    logic [4:0] source_register1;
+    logic [4:0] source_register2;
+    logic [4:0] destination_register;
+    assign source_register1 = instruction[19:15];
+    assign source_register2 = instruction[24:20];
+    assign destination_register = instruction[11:7];
+
+    wire [31:0] read_register1;
+    wire [31:0] read_register2;
+
+    logic write_back_valid;
+
+    logic [31:0] write_back_data;
+
+    always_comb begin : write_back_source_select
+      case (write_back_source)
+        2'b00: begin
+          write_back_data  = alu_result;
+          write_back_valid = 1'b1;
+        end
+        2'b01: begin
+          write_back_data  = write_back_data;
+          write_back_valid = write_back_valid;
+        end
+        2'b10: begin
+          write_back_data  = program_counter_plus_four;
+          write_back_valid = 1'b1;
+        end
+        2'b11: begin
+          write_back_data  = program_counter_plus_four;
+          write_back_valid = 1'b1;
+        end
+      endcase
+    end
 
   //Sign Extend
   logic [24:0] raw_imm;
@@ -158,24 +164,24 @@ module cpu (
   end
 
   alu alu_instatiate (
-      .alu_control(alu_control),
-      .src1(read_reg1),
-      .src2(alu_src2),
-      .alu_result(alu_result),
+      .opcode(alu_control),
+      .opA(read_register1),
+      .opB(alu_source2),
+      .result(alu_result),
       .zero(alu_zero),
       .last_bit(alu_last_bit)
   );
 
   //Load/Store
-  wire [ 3:0] memory_byte_enbale;
+  wire [ 3:0] memory_byte_enable;
   wire [31:0] memory_write_data;
 
   load_store_decoder load_store_decode (
-      .alu_result_address(alu_result),
-      .reg_read(read_reg2),
+      .result_address(alu_result),
+      .register_read(read_register2),
       .f3(f3),
-      .byte_enable(mem_byte_enable),
-      .data(mem_write_data)
+      .byte_enable(memory_byte_enable),
+      .data(memory_write_data)
   );
 
   //Data Memory
@@ -187,25 +193,25 @@ module cpu (
       // Memory inputs
       .clk(clk),
       .address({alu_result[31:2], 2'b00}),
-      .write_data(mem_write_data),
-      .write_enable(mem_write),
-      .byte_enable(mem_byte_enable),
-      .rst_n(1'b1),
+      .write_data(memory_write_data),
+      .write_enable(memory_write),
+      .byte_enable(memory_byte_enable),
+      .nrst(1'b1),
 
       // Memory outputs
-      .read_data(mem_read)
+      .read_data(memory_read)
   );
 
   //Reader
   wire [31:0] memory_write_back_data;
-  wire mem_read_write_back_valid;
+  wire memory_read_write_back_valid;
 
   reader reader_instance (
-      .mem_data(mem_read),
-      .be_mask(mem_byte_enable),
+      .memory_data(memory_read),
+      .byte_enable_mask(memory_byte_enable),
       .f3(f3),
-      .wb_data(mem_read_write_back_data),
-      .valid(mem_read_write_back_valid)
+      .write_back_data(memory_write_back_data),
+      .valid(memory_read_write_back_valid)
   );
 
 endmodule

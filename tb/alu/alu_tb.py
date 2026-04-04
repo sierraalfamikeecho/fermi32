@@ -4,13 +4,21 @@ import cocotb
 from cocotb.triggers import Timer
 
 
+@cocotb.test()
+async def test_alu(dut):
+    await sum_test(dut)
+    await sub_test(dut)
+    await and_test(dut)
+    await or_test(dut)
+    await xor_test(dut)
+
+
 def binary_hex(bin_str):
     hex_str = hex(int(str(bin_str), 2))[2:]
     hex_str = hex_str.zfill(8)
     return hex_str.upper()
 
 
-@cocotb.test()
 async def sum_test(dut):
     await Timer(1, unit="ns")
     dut.alu_control.value = 0b0000
@@ -25,7 +33,6 @@ async def sum_test(dut):
         assert int(dut.alu_result.value) == expected
 
 
-@cocotb.test()
 async def sub_test(dut):
     await Timer(1, unit="ns")
     for _ in range(1000):
@@ -39,7 +46,6 @@ async def sub_test(dut):
         assert int(dut.alu_result.value) == expected
 
 
-@cocotb.test()
 async def and_test(dut):
     await Timer(1, unit="ns")
     for _ in range(1000):
@@ -53,7 +59,6 @@ async def and_test(dut):
         assert int(dut.alu_result.value) == expected
 
 
-@cocotb.test()
 async def or_test(dut):
     await Timer(1, unit="ns")
     for _ in range(1000):
@@ -67,7 +72,6 @@ async def or_test(dut):
         assert int(dut.alu_result.value) == expected
 
 
-@cocotb.test()
 async def xor_test(dut):
     await Timer(1, unit="ns")
     for _ in range(1000):
