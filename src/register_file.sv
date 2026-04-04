@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 
-module RegisterFile(
+module register_file(
   input WE3, clk,
   input [4:0] A1,
   input [4:0] A2,

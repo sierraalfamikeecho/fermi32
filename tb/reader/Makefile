@@ -2,7 +2,7 @@
 SIM ?= verilator
 TOPLEVEL_LANG ?= verilog
 
-VERILOG_SOURCE += $(PWD)../../src/reader.sv
+VERILOG_SOURCE += $(PWD)/../../src/reader.sv
 
 COCOTB_TOPLEVEL += reader_tb.py
 

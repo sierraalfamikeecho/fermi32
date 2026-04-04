@@ -2,7 +2,7 @@
 SIM ?= verilator
 TOPLEVEL_LANG ?= verilog
 
-VERILOG_SOURCE += $(PWD)../../src/program_counter.sv
+VERILOG_SOURCE += $(PWD)/../../src/program_counter.sv
 
 COCOTB_TOPLEVEL += memory_tb.py
 

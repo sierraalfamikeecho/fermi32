@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 
 import cocotb
-from cocotb.runner import get_runner
+from cocotb_tools.runner import get_runner
 
 
 def test_runner(design_name):
