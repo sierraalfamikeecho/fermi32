@@ -1,20 +1,17 @@
 # Single cycle RISC-V CPU
-A basic attempt to build a RISC-V processor so I can learn more about digital logic design and computer architecture. Uses [This project](https://github.com/0BAB1/HOLY_CORE_COURSE) as a model. Testbenches are in python with cocotb and modules are in system verilog.
-  - [x] Program Counter
-    - [ ] Testbench
+A basic attempt to build a RISC-V processor so I can learn more about digital logic design and computer architecture. Uses [This project](https://github.com/0BAB1/HOLY_CORE_COURSE) as a model. Testbenches are in python with cocotb and modules are in system verilog. 
   - [x] Registers
     - [x] Testbench
-  - [ ] Control
-    - [ ] Testbench
+  - [x] Control
+    - [x] Testbench
   - [x] Arithmetic Logic Unit
     - [x] Testbench
-  - [ ] Load/Store Decoder
-    - [ ] Testbench
-  - [ ] Cache Reader
-    - [ ] Testbench
+  - [x] Load/Store Decoder
+    - [x] Testbench
+  - [x] Cache Reader
+    - [x] Testbench
   - [x] Memory
-    - [ ] Testbench
+    - [x] Testbench
   - [x] Signext
-    - [ ] Testbench  
+    - [x] Testbench  
   - [ ] FPGA Syth
-  - [x] C Code/Assembly
